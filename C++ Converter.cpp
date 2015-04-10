@@ -18,7 +18,6 @@ using namespace std;
 #define boost ios_base::sync_with_stdio(0)
 //vector<int> g[2*100000+5];int par[2*100000+5];
 
-//BAKCHODI
 vector<string> token(string S)
 {
 	vector<string>ans;
