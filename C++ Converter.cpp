@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 #include<iostream>
 using namespace std;
-#define fre 	freopen("0.in","r",stdin);freopen("0.csv","w",stdout)
+#define fre 	freopen("0.txt","r",stdin);freopen("0.csv","w",stdout)
 #define abs(x) ((x)>0?(x):-(x))
 #define M 1000000007
 #define lld signed long long int
@@ -17,6 +17,8 @@ using namespace std;
 #define printll(x) printf("%lld\n",x)
 #define boost ios_base::sync_with_stdio(0)
 //vector<int> g[2*100000+5];int par[2*100000+5];
+
+//BAKCHODI
 vector<string> token(string S)
 {
 	vector<string>ans;
@@ -34,6 +36,7 @@ vector<string> token(string S)
 	}
 	return ans;
 }
+
 string purify(string S)
 {
 	string T="";
@@ -47,32 +50,38 @@ string purify(string S)
 	}
 	return T;
 }
-string  perform(string S,string d)
-{
-	S=purify(S);
-	cout<<"\"";
-	if(S.find(':')!=string::npos)
-		cout<<S.substr(S.find(':')+1)<<' ';
-	std::getline (std::cin,S);
-	S=purify(S);
-	while(S.substr(0,d.size())!=d)
-	{
-		if(S.find(':')!=string::npos)
-			cout<<S.substr(S.find(':')+1)<<' ';
-		else
-			cout<<S<<' ';
-		std::getline (std::cin,S);
-		S=purify(S);
-	}
 
+
+string  perform(string start_word, string end_word)
+{
+	start_word = purify(start_word);
+	cout<<"\"";
+
+	if(start_word.find(':')!=string::npos)
+		cout<<start_word.substr(start_word.find(':')+1)<<' ';
+
+	std::getline (std::cin,start_word);
+	start_word=purify(start_word);
+
+	while(start_word.substr(0,end_word.size())!=end_word)
+	{
+		if(start_word.find(':')!=string::npos)
+			cout<<start_word.substr(start_word.find(':')+1)<<' ';
+		else
+			cout<<start_word<<' ';
+
+		std::getline (std::cin,start_word);
+		start_word=purify(start_word);
+	}
 	cout<<"\",";//cout<<endl;
-	return S;
+	return start_word;
 }
+
 int main()
 {
 	fre;
 	string start="(12) PATENT APPLICATION PUBLICATION";
-	string end="(57) Abstract : ";
+	//string end_string="(57) Abstract : ";
 	string L3="(22) Date of filing of Application :";
 	string S;
 	int T=0;
