@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 #include<iostream>
 using namespace std;
-#define fre 	freopen("0.txt","r",stdin);freopen("0.csv","w",stdout)
+#define fre 	freopen("0.in","r",stdin);freopen("WITH_ABS.csv","w",stdout)
 #define abs(x) ((x)>0?(x):-(x))
 #define M 1000000007
 #define lld signed long long int
@@ -72,13 +72,36 @@ string  perform(string start_word, string end_word)
 		std::getline (std::cin,start_word);
 		start_word=purify(start_word);
 	}
-	cout<<"\",";//cout<<endl;
+	cout<<"\",";
+	return start_word;
+}
+string  abstract(string start_word, string end_word,string e2)
+{
+	start_word = purify(start_word);
+	cout<<"\"";
+
+	if(start_word.find(':')!=string::npos)
+		cout<<start_word.substr(start_word.find(':')+1)<<' ';
+
+	std::getline (std::cin,start_word);
+	start_word=purify(start_word);
+
+	while(start_word.find(end_word)==string::npos and start_word.find(e2)==string::npos)
+	{
+		cout<<start_word<<' ';
+
+		std::getline (std::cin,start_word);
+		start_word=purify(start_word);
+	}
+	cout<<"\",";
 	return start_word;
 }
 
 int main()
 {
-	fre;
+	freopen("0.in","r",stdin);
+	freopen("WITH_ABS.csv","w",stdout);
+
 	string start="(12) PATENT APPLICATION PUBLICATION";
 	//string end_string="(57) Abstract : ";
 	string L3="(22) Date of filing of Application :";
@@ -87,7 +110,7 @@ int main()
 	string c1="\"APPLICATION NUMBER\",\"DATE OF FILLING APPLICATION\",\"PUBLICATION DATE\",\"TITLE OF INVENTION\",\"International classification\",";
 	c1+="\"Priority Document No\",\"PRIORITY DATE\",\"NAME OF PRIORITY COUNTRY\",\"INTERNATIONAL APPLICATION NUMBER\",\"INTERNATIONAL APPLICATION NO. FILLING DATE\",";
 	c1+="\"INTERNATIONAL PUBLICATION NUMBER\",\"Patent of Addition to Application Number\",\"Patent of Addition to Application Number FILLING DATE\",\"DIVISIONAL TO APPLICATION NUMBER\",\"DIVISIONAL TO APPLICATION NUMBER FILLING DATE\"";
-	c1+=",\"DETAIL OF APPLICANT\",\"DETAIL OF INVENTOR\"";
+	c1+=",\"DETAIL OF APPLICANT\",\"DETAIL OF INVENTOR\",\"ABSTRACT\"";
 	cout<<c1<<endl;
 	while(std::getline (std::cin,S))
 	{
@@ -223,7 +246,10 @@ int main()
 			//--------------DETAIL OF INVENTOR-------------------------
 			S=perform(S,"(57) Abstract :");
 
+			//--------------abstract-------------------------
+			S=abstract(S,"The Patent Office Journal","No. of Pages");
 			cout<<endl;
+			//return 0;
 		}
 	}
 	return 0;
