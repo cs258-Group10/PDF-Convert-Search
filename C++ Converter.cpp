@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
 
 			return 0;
 		}
-		if(S.find("Publication After 18 Months :")!=string::npos and Pub_after_18_open==0)
+		if(S.find("Publication After 18 Months :")!=string::npos and Pub_after_18_open==0 or S.find("Publication After 18 Months:")!=string::npos)
 		{
 			Pub_after_18_open=1;
 			fclose (stdout);
