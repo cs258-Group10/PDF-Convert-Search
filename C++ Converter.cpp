@@ -254,6 +254,12 @@ int main(int argc, char *argv[])
 			freopen(OUTPUT_3,"w",stdout);
 
 			GRANTED_data_incoming();
+
+			fclose (stdout);
+
+			if(remove(argv[1])!=0)
+			perror("ERROR aa gaya x");
+
 			return 0;
 		}
 		if(S.find("Publication After 18 Months :")!=string::npos and Pub_after_18_open==0)
@@ -406,6 +412,9 @@ int main(int argc, char *argv[])
 			//return 0;
 		}
 	}
-	remove(argv[1]);
+	fclose (stdout);
+	freopen("Window","w",stdout);
+	if(remove(argv[1])!=0)
+		perror("ERROR ");
 	return 0;
 }
