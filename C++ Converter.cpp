@@ -79,7 +79,27 @@ string to_string(int x)
 	}
 	return S;
 }
-
+bool is_not_a_time(string S)
+{
+	if(S.size()!=8)
+		return 1;
+	if(S[2]==S[5] and S[5]==':')
+	{
+		return 0;
+	}
+	else return 1;
+}
+bool is_a_city(string S)
+{
+	if(S.find("DELHI")!=string::npos)
+		return 1;
+	if(S.find("KOLKATA")!=string::npos)
+		return 1;
+	if(S.find("MUMBAI")!=string::npos)
+		return 1;
+	if(S.find("CHENNAI")!=string::npos)
+		return 1;
+}
 vector<string> token(string S)
 {
 	vector<string>ans;
@@ -92,7 +112,7 @@ vector<string> token(string S)
 		while(S[i]!=' ' and i<S.size())
 			temp+=S[i],++i;
 		++i;
-		if(temp!="")
+		if(temp!="" and is_not_a_time(temp))
 			ans.ps(temp);
 
 		while(S[i]==' ' and i<S.size())
@@ -106,6 +126,10 @@ bool is_a_date(string S)
 	if(S.size()!=10)
 		return 0;
 	if(S[2]==S[5] and S[5]=='/')
+	{
+		return 1;
+	}
+	if(S[2]==S[5] and S[5]=='.')
 	{
 		return 1;
 	}
@@ -147,7 +171,7 @@ void GRANTED_data_incoming()
 	cout<<HEAD;
 	string I,S;
 	AT=100000000;
-	int DEC,flag=0;
+	int DEC;
 	for(int i=1;get_next(S);++i)
 	{
 		I=to_string(i);
@@ -162,9 +186,8 @@ void GRANTED_data_incoming()
 			if(DEC==0)
 				return;
 			else
-			if(flag==0 and DEC==2)
+			if(DEC==2)
 			{
-				flag=1;
 				i=1;
 				I=to_string(i);
 			}
@@ -202,6 +225,13 @@ void GRANTED_data_incoming()
 			S=purify(S);
 			if(is_a_date(S))
 				break;
+			if(is_a_city(S))
+			{
+				cout<<"\",";
+				cout<<"\"\","; 		//incase its empty 	Date of Publication of Abstract u/s 11(A)
+				cout<<"\""<<S<<"\",";
+				goto complete	;
+			}
 			cout<<S<<' ';
 		}
 		cout<<"\",";
@@ -210,6 +240,8 @@ void GRANTED_data_incoming()
 
 		get_next(S);					//Appropriation Office
 		cout<<"\""<<S<<"\",";
+
+		complete:;
 		cout<<endl;
 	}
 }
@@ -219,30 +251,44 @@ int main(int argc, char *argv[])
 	char *I2=" Publication After 18 Months.csv";
 	char *I3=" GRANTED.csv";
 
-
 	freopen(argv[1],"r",stdin);
 
-	char *OUTPUT_1=new char[strlen(argv[1])+strlen(I1)+1];
-	strcpy(OUTPUT_1,argv[1]);
-	strcat(OUTPUT_1,I1);
 
-	freopen(OUTPUT_1,"w",stdout);
+	char *OUTPUT_2=new char[strlen(argv[1])+strlen(I2)+1];
+	strcpy(OUTPUT_2,argv[1]);
+	strcat(OUTPUT_2,I2);
+	freopen(OUTPUT_2,"w",stdout);
 
+	string start="12) PATENT APPLICATION PUBLICATION";
 
-	string start="(12) PATENT APPLICATION PUBLICATION";
-	//string end_string="(57) Abstract : ";
 	string L3="(22) Date of filing of Application :";
 	string S;
-	int T=0;
+
 	string c1="\"APPLICATION NUMBER\",\"DATE OF FILLING APPLICATION\",\"PUBLICATION DATE\",\"TITLE OF INVENTION\",\"International classification\",";
 	c1+="\"Priority Document No\",\"PRIORITY DATE\",\"NAME OF PRIORITY COUNTRY\",\"INTERNATIONAL APPLICATION NUMBER\",\"INTERNATIONAL APPLICATION NO. FILLING DATE\",";
 	c1+="\"INTERNATIONAL PUBLICATION NUMBER\",\"Patent of Addition to Application Number\",\"Patent of Addition to Application Number FILLING DATE\",\"DIVISIONAL TO APPLICATION NUMBER\",\"DIVISIONAL TO APPLICATION NUMBER FILLING DATE\"";
 	c1+=",\"DETAIL OF APPLICANT\",\"DETAIL OF INVENTOR\",\"ABSTRACT\"";
 	cout<<c1<<endl;
+
 	int Pub_after_18_open=0;
+	int early_open=0;
+
 	while(std::getline (std::cin,S))
 	{
 		S=purify(S);
+
+		if((S.find("Early Publication:")!=string::npos or S.find("Early Publication :")!=string::npos) and early_open==0)
+		{
+			early_open=1;
+
+			char *OUTPUT_1=new char[strlen(argv[1])+strlen(I1)+1];
+			strcpy(OUTPUT_1,argv[1]);
+			strcat(OUTPUT_1,I1);
+
+			fclose (stdout);
+			freopen(OUTPUT_1,"w",stdout);
+
+		}
 
 		if(S.find("Publication Under Section 43(2) in Respect of the Grant")!=string::npos)
 		{
@@ -254,14 +300,10 @@ int main(int argc, char *argv[])
 			freopen(OUTPUT_3,"w",stdout);
 
 			GRANTED_data_incoming();
-
-			fclose (stdout);
-
-			if(remove(argv[1])!=0)
-			perror("ERROR aa gaya x");
-
+			fclose(stdout);
 			return 0;
 		}
+
 		if(S.find("Publication After 18 Months :")!=string::npos and Pub_after_18_open==0 or S.find("Publication After 18 Months:")!=string::npos)
 		{
 			Pub_after_18_open=1;
@@ -270,19 +312,12 @@ int main(int argc, char *argv[])
 			char *OUTPUT_2=new char[strlen(argv[1])+strlen(I2)+1];
 			strcpy(OUTPUT_2,argv[1]);
 			strcat(OUTPUT_2,I2);
+
 			freopen(OUTPUT_2,"w",stdout);
 
 		}
-		if(S.size()>=start.size() and S.substr(0,start.size())==start)
+		if(S.find(start)!=string::npos)
 		{
-			//dealing with first three lines
-
-			/*
-			(12) PATENT APPLICATION PUBLICATION (21) Application No.329/CHE/2009 A
-			(19) INDIA
-			(22) Date of filing of Application :14/02/2009 (43) Publication Date : 03/04/2009
-			(54) Title of the invention : Using rack and pinions to drive the power output shaft in an internal combustion engine
-			*/
 
 			cout<<"\""<<S.substr(S.find('.')+1)<<"\",";	//printing data after '.' (i.e. application number)
 			std::getline (std::cin,S);//skip (19)india
@@ -412,9 +447,4 @@ int main(int argc, char *argv[])
 			//return 0;
 		}
 	}
-	fclose (stdout);
-	freopen("Window","w",stdout);
-	if(remove(argv[1])!=0)
-		perror("ERROR ");
-	return 0;
 }
