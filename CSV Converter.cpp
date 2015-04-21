@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
 
 			fclose (stdout);
 			freopen(OUTPUT_1,"w",stdout);
-
+			cout<<c1<<endl;
 		}
 
 		if(S.find("Publication Under Section 43(2) in Respect of the Grant")!=string::npos)
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
 			strcat(OUTPUT_2,I2);
 
 			freopen(OUTPUT_2,"w",stdout);
-
+			cout<<c1<<endl;
 		}
 		if(S.find(start)!=string::npos)
 		{
