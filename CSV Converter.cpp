@@ -129,6 +129,10 @@ bool is_a_date(string S)
 	{
 		return 1;
 	}
+	if(S[2]==S[5] and S[5]=='-')
+	{
+		return 1;
+	}
 	if(S[2]==S[5] and S[5]=='.')
 	{
 		return 1;
@@ -347,9 +351,11 @@ int main(int argc, char *argv[])
 			S=perform(S,"(86) International Application");
 
 			//--------------INTERNATIONAL APP NO. AND FILLING DATE-------------------------
-			std::getline (std::cin,S);
-			std::getline (std::cin,S);
+			while(S.find(":")==string::npos)
+				std::getline (std::cin,S);
 			S=purify(S);
+//changes  DONE made in sql
+
 
 			cout<<"\"";
 			cout<<S.substr(S.find(':')+1)<<' ';
@@ -387,7 +393,7 @@ int main(int argc, char *argv[])
 			cout<<S.substr(S.find(':')+1)<<' ';
 			std::getline (std::cin,S);
 			S=purify(S);
-			while(S.substr(0,string(":").size())!=":")
+			while(S.find(":")==string::npos)
 			{
 				cout<<S<<' ';
 				std::getline (std::cin,S);
@@ -399,17 +405,18 @@ int main(int argc, char *argv[])
 			cout<<S.substr(S.find(':')+1)<<' ';
 			std::getline (std::cin,S);
 			S=purify(S);
-			while(S.substr(0,string("(62) Divisional to Application Number").size())!="(62) Divisional to Application Number")
+			//changes
+			while(S.find("(62) Divisional to")==string::npos)
 			{
-				cout<<S<<' ';
+				//cout<<S<<' ';
 				std::getline (std::cin,S);
 				S=purify(S);
 			}
 			cout<<"\",";
 
 			//--------------divisional application number AND FILLING DATE-------------------------
-			std::getline (std::cin,S);
-			std::getline (std::cin,S);
+			while(S.find(":")==string::npos)
+				std::getline (std::cin,S);
 			S=purify(S);
 			cout<<"\"";
 			cout<<S.substr(S.find(':')+1)<<' ';
@@ -427,9 +434,9 @@ int main(int argc, char *argv[])
 			cout<<S.substr(S.find(':')+1)<<' ';
 			std::getline (std::cin,S);
 			S=purify(S);
-			while(S.substr(0,string("(71)Name of Applicant").size())!="(71)Name of Applicant")
+			while(S.find("(71)Name of Applicant")==string::npos)
 			{
-				cout<<S<<' ';
+				//cout<<S<<' ';
 				std::getline (std::cin,S);
 				S=purify(S);
 			}
