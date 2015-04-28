@@ -47,6 +47,8 @@ public class Patents_Data_Manager {
 	private JTextField textField_6;
 	private JTextField textField_9;
 	private JTable table_1;
+	String path;
+	File[] f = null;
 	/**
 	 * @wbp.nonvisual location=462,269
 	 */
@@ -80,6 +82,7 @@ public class Patents_Data_Manager {
 	 * Initialize the contents of the frame.
 	 */
 	public void initialize() {
+		
 		frame = new JFrame();
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setBounds(100, 100, 1366, 768);
@@ -458,8 +461,52 @@ public class Patents_Data_Manager {
 				}
 			}			
 		});
+		
+		JLabel lblPath = new JLabel("Path");
+		lblPath.setBounds(612, 29, 633, 50);
+		panel_1.add(lblPath);
+		
 		btnNewButton.setBounds(502, 130, 89, 23);
 		panel_1.add(btnNewButton);
+		
+		JButton btnChooseFileFor = new JButton("Choose File for Conversion");
+		btnChooseFileFor.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setMultiSelectionEnabled(true);
+				chooser.showOpenDialog(null);
+				f = chooser.getSelectedFiles();
+				lblPath.setText(path);
+			}
+		});
+		btnChooseFileFor.setBounds(378, 44, 213, 23);
+		panel_1.add(btnChooseFileFor);
+		
+		JButton btnConvert = new JButton("Convert");
+		btnConvert.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				for(int i=0 ; i<f.length ; i++){
+				
+					path=f[i].getPath();
+					
+					try{
+					Process process2 = Runtime.getRuntime().exec("java -jar D:\\pdfbox-app-1.8.8.jar ExtractText \"" + path + "\" \"" + path + "temp.in\"",null,new File("D:\\"));
+					process2.waitFor();
+					Process process1 = Runtime.getRuntime().exec("D:\\CSVCONVERTER.exe \"" + path + "temp.in\"",null,new File("D:\\"));
+					process1.waitFor();					
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		btnConvert.setBounds(417, 78, 89, 23);
+		panel_1.add(btnConvert);
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("New tab", null, panel_2, null);
@@ -486,7 +533,7 @@ public class Patents_Data_Manager {
 					
 					try{
 						Statement statement = connection.createStatement();
-						String fquery = "insert into patents_granted(patent_no,app_no,app_date,priority_date,title,pub_date,office) values("+line+")";
+						String fquery = "insert into patents_granted(patent_no,app_no,app_date,priority_date,title_and_patentee,pub_date,office) values("+line+")";
 						ResultSet x=statement.executeQuery(fquery);
 						statement.close();
 						
@@ -654,7 +701,7 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where patent_no like '%"+textField_1.getText()+"%'";
+						query+="where lower(patent_no) like lower('%"+textField_1.getText()+"%')";
 					}
 				}
 				
@@ -701,12 +748,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where APP_NO like '%"+textField_2.getText()+"%'";
+						query+="where lower(APP_NO) like lower('%"+textField_2.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and APP_NO like '%"+textField_2.getText()+"%'";
+						query+=" and lower(APP_NO) like lower('%"+textField_2.getText()+"%')";
 					}
 				}
 				
@@ -716,12 +763,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where title_and_patentee like '%"+textField_6.getText()+"%'";
+						query+="where lower(title_and_patentee) like lower('%"+textField_6.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and title_and_patentee like '%"+textField_6.getText()+"%'";
+						query+=" and lower(title_and_patentee) like lower('%"+textField_6.getText()+"%')";
 					}
 				}
 				
@@ -731,12 +778,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where office like '%"+textField_9.getText()+"%'";
+						query+="where lower(office) like lower('%"+textField_9.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and office like '%"+textField_9.getText()+"%'";
+						query+=" and lower(office) like lower('%"+textField_9.getText()+"%')";
 					}
 				}
 				
@@ -834,7 +881,7 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where app_no like '%"+textField.getText()+"%'";
+						query+="where lower(app_no) like lower('%"+textField.getText()+"%')";
 					}
 				}
 				
@@ -881,12 +928,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where TITLE_OF_INVENTION like '%"+textField_3.getText()+"%'";
+						query+="where lower(TITLE_OF_INVENTION) like lower('%"+textField_3.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and TITLE_OF_INVENTION like '%"+textField_3.getText()+"%'";
+						query+=" and lower(TITLE_OF_INVENTION) like lower('%"+textField_3.getText()+"%')";
 					}
 				}
 				
@@ -896,12 +943,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where INT_CLASSIFICATION like '%"+textField_4.getText()+"%'";
+						query+="where lower(INT_CLASSIFICATION) like lower('%"+textField_4.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and INT_CLASSIFICATION like '%"+textField_4.getText()+"%'";
+						query+=" and lower(INT_CLASSIFICATION) like lower('%"+textField_4.getText()+"%')";
 					}
 				}
 				
@@ -911,12 +958,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where PRIORITY_DOC_NO like '%"+textField_5.getText()+"%'";
+						query+="where lower(PRIORITY_DOC_NO) like lower('%"+textField_5.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and PRIORITY_DOC_NO like '%"+textField_5.getText()+"%'";
+						query+=" and lower(PRIORITY_DOC_NO) like lower('%"+textField_5.getText()+"%')";
 					}
 				}
 				
@@ -945,12 +992,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where NAME_OF_PRIORITY_COUNTRY like '%"+textField_7.getText()+"%'";
+						query+="where lower(NAME_OF_PRIORITY_COUNTRY) like lower('%"+textField_7.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and NAME_OF_PRIORITY_COUNTRY like '%"+textField_7.getText()+"%'";
+						query+=" and lower(NAME_OF_PRIORITY_COUNTRY) like lower('%"+textField_7.getText()+"%')";
 					}
 				}
 				
@@ -960,12 +1007,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where INT_APP_NO like '%"+textField_8.getText()+"%'";
+						query+="where lower(INT_APP_NO) like lower('%"+textField_8.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and INT_APP_NO like '%"+textField_8.getText()+"%'";
+						query+=" and lower(INT_APP_NO) like lower('%"+textField_8.getText()+"%')";
 					}
 				}
 				
@@ -994,12 +1041,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where INT_PUB_NO like '%"+textField_10.getText()+"%'";
+						query+="where lower(INT_PUB_NO) like lower('%"+textField_10.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and INT_PUB_NO like '%"+textField_10.getText()+"%'";
+						query+=" and lower(INT_PUB_NO) like lower('%"+textField_10.getText()+"%')";
 					}
 				}
 				
@@ -1009,12 +1056,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where PAT_OF_ADD_TO_APP_NO like '%"+textField_11.getText()+"%'";
+						query+="where lower(PAT_OF_ADD_TO_APP_NO) like lower('%"+textField_11.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and PAT_OF_ADD_TO_APP_NO like '%"+textField_11.getText()+"%'";
+						query+=" and lower(PAT_OF_ADD_TO_APP_NO) like lower('%"+textField_11.getText()+"%')";
 					}
 				}
 				
@@ -1043,12 +1090,12 @@ public class Patents_Data_Manager {
 					
 					if(check == 1)
 					{
-						query+="where DIV_TO_APP_NO like '%"+textField_13.getText()+"%'";
+						query+="where lower(DIV_TO_APP_NO) like lower('%"+textField_13.getText()+"%')";
 					}
 					
 					else if(check>1)
 					{
-						query+=" and DIV_TO_APP_NO like '%"+textField_13.getText()+"%'";
+						query+=" and lower(DIV_TO_APP_NO) like lower('%"+textField_13.getText()+"%')";
 					}
 				}
 				
