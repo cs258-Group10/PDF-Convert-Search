@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
 {
 	char *I1="HELPER_Early Publication.csv";
 	char *I2="HELPER_Publication After 18 Months.csv";
-	char *I3="HELPER_GRANTED_HELPER.csv";
+	char *I3="HELPER_GRANTED.csv";
 
 	freopen(argv[1],"r",stdin);
 
